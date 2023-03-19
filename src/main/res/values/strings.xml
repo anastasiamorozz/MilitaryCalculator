@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Kursova</string>
+    <string name="loginView">Уже маєте аккаунт?</string>
+    <string name="signUpView">Ще немає аккаунта? Створіть його!</string>
+    <string name="password">Пароль</string>
+    <string name="makeProfile">Створити аккаунт</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="name">Ім\'я</string>
+</resources>
