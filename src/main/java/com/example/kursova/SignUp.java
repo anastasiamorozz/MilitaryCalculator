@@ -2,9 +2,12 @@ package com.example.kursova;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +18,11 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
@@ -22,6 +30,8 @@ public class SignUp extends AppCompatActivity {
     TextInputEditText textInputEditTextName, textInputEditTextEmail, textInputEditTextPassword;
     Button buttonSignUp;
     TextView textViewLogin;
+    final String fileName = "user.dat";
+    User user;
 
     static long newRowId;
 
@@ -33,26 +43,6 @@ public class SignUp extends AppCompatActivity {
             textInputEditTextEmail.setError("Неправильний формат email");
             isValid = false;
         }
-
-        // перевірка на унікальність email
-        if (isValid) {
-            DatabaseHelper dbHelper = new DatabaseHelper(this);
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-            String[] columns = {DatabaseHelper.KEY_EMAIL};
-            String selection = DatabaseHelper.KEY_EMAIL + "=?";
-            String[] selectionArgs = {email};
-
-            Cursor cursor = db.query(DatabaseHelper.TABLE_USERS, columns, selection, selectionArgs, null, null, null);
-            int count = cursor.getCount();
-            cursor.close();
-
-            if (count > 0) {
-                textInputEditTextEmail.setError("Користувач з таким email вже існує");
-                isValid = false;
-            }
-        }
-
         return isValid;
     }
 
@@ -108,26 +98,23 @@ public class SignUp extends AppCompatActivity {
                 isValid = false;
             }
 
-            if (isValid){// Створюємо об'єкт користувача зі значеннями ім'я, email та пароль
-                User user = new User(name, email, password);
+            if (isValid){
+                // Створення об'єкту користувача з введеними даними
+                user = new User(name, email, password);
+                Login.users.add(user);
+                try {
+                    FileOutputStream fos = getBaseContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+                    ObjectOutputStream os = new ObjectOutputStream(fos);
+                    os.writeObject(Login.users);
+                    os.close();
+                    fos.close();
 
-                // Додаємо користувача до бази даних
-                DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-                SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-                //Перевірка на існування таблиці користувачів
-                databaseHelper.addUser(user, db);
-
-
-                if (newRowId != -1) {
-                    // Реєстрація пройшла успішно, показуємо повідомлення користувачеві
-                    Toast.makeText(getApplicationContext(), "Реєстрація пройшла успішно!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignUp.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Якщо вставка не вдалася, виводимо повідомлення про помилку
-                    Toast.makeText(getApplicationContext(), "Помилка при реєстрації", Toast.LENGTH_SHORT).show();
+                    // Повідомлення про успішну серіалізацію
+                    Toast.makeText(getApplicationContext(), "Реєстрація пройшла успішно", Toast.LENGTH_SHORT).show();
+                } catch (FileNotFoundException e){
+                    Toast.makeText(getApplicationContext(), "Не вдалось знайти файл. Спробуйте знову!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(getApplicationContext(), "Не вдалось створити користувача. Спробуйте знову!", Toast.LENGTH_SHORT).show();
                 }
             }
 

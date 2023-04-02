@@ -1,6 +1,9 @@
 package com.example.kursova;
 
-public class User {
+
+import java.io.Serializable;
+
+public class User implements Serializable {
     public int id;
     public String name;
     public String email;
@@ -14,22 +17,6 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
-    public User(int id, String name, String email, String password) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
