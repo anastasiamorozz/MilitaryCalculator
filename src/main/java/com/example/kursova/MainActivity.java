@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         buttonOpenSecondActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SignUp.class);
+                Intent intent = new Intent(MainActivity.this, Products.class);
                 startActivity(intent);
             }
         });

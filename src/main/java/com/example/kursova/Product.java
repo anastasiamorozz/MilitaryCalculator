@@ -7,14 +7,14 @@ public class Product implements Serializable {
     private String type;
     private MRE mre;
     private double weight;
-    private byte[] image;
+    public boolean selected;
 
-    public Product(String name, String type, MRE mre, double weight, byte[] image) {
+    public Product(String name, String type, MRE mre, double weight) {
         this.name = name;
         this.type = type;
         this.mre = mre;
         this.weight = weight;
-        this.image = image;
+        this.selected=false;
     }
 
     public String getName() {
@@ -37,12 +37,10 @@ public class Product implements Serializable {
         this.weight = weight;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
+    public void setSelected(boolean selected){ this.selected = true;}
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public boolean isChecked() {
+        return selected;
     }
 }
 
