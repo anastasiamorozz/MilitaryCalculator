@@ -42,5 +42,6 @@ public class Product implements Serializable {
     public boolean isChecked() {
         return selected;
     }
+
 }
 
